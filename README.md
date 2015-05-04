@@ -1,7 +1,7 @@
 SparkFun Rotary Encoder Breakout - Illuminated (RG/RGB)
 =======================================================
 
-![SparkFun Rotary Encoder Breakout - Illuminated (RG/RGB)](URL for picture of part)
+![SparkFun Rotary Encoder Breakout - Illuminated (RG/RGB)](https://cdn.sparkfun.com//assets/parts/7/9/3/3/11722-03.jpg)
 
 [*SparkFun Rotary Encoder Breakout - Illuminated (RG/RGB) (BOB-11722)*](https://www.sparkfun.com/products/11722)
 
