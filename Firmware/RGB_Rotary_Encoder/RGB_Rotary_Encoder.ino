@@ -140,7 +140,7 @@ void setup()
   pinMode(ROT_LEDG, OUTPUT);
   pinMode(ROT_LEDR, OUTPUT);
 
-  setLED(OFF);
+  setLED(WHITE);
 
   Serial.begin(9600); // Use serial for debugging
   Serial.println("Begin RGB Rotary Encoder Testing");
