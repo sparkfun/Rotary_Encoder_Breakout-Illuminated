@@ -1,4 +1,4 @@
-// "RGB_Rotary_Encoder_Demo"
+// "RGB_Rotary_Encoder"
 // Example sketch based on the Lilypad MP3 Player
 // but modified for the the Arduino Uno/RedBoard
 // Modified By: Ho Yun Bobby Chan
