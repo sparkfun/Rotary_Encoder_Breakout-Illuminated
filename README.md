@@ -11,8 +11,9 @@ Turn it over and it has a footprint for the R/G version!
 
 Repository Contents
 -------------------
-
+* **/Firmware** - Example for the RGB and RG Rotary Encoders
 * **/Hardware** - Eagle design files (.brd, .sch)
+* **/Libraries** - Archived library of the PinChangeInt used for the example code
 
 Documentation
 --------------
@@ -25,9 +26,8 @@ Product Versions
 
 Compatible with the following rotary encoders: 
 
-* [COM-10982](https://www.sparkfun.com/products/10982)- RGB rotary encoder-illuminated.
-* [COM-10596](https://www.sparkfun.com/products/10596)- RG rotary encoder - illuminated.
-
+* [COM-10982](https://www.sparkfun.com/products/10982)- RGB rotary encoder - illuminated; buttons and LEDs are common cathode
+* [COM-10596](https://www.sparkfun.com/products/10596)- RG rotary encoder - illuminated, buttons and LEDs are common anode
 
 License Information
 -------------------
