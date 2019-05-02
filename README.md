@@ -26,8 +26,10 @@ Product Versions
 
 Compatible with the following rotary encoders: 
 
-* [COM-10982](https://www.sparkfun.com/products/10982)- RGB rotary encoder - illuminated; buttons and LEDs are common cathode
-* [COM-10596](https://www.sparkfun.com/products/10596)- RG rotary encoder - illuminated, buttons and LEDs are common anode
+* [COM-15141](https://www.sparkfun.com/products/15141) - RGB rotary encoder - illuminated; buttons and LEDs are common cathode
+* [COM-15140](https://www.sparkfun.com/products/15140) - RG rotary encoder - illuminated, buttons and LEDs are common anode
+* _[COM-10982 (retired)](https://www.sparkfun.com/products/10982) - RGB rotary encoder - illuminated; buttons and LEDs are common cathode_
+* _[COM-10596 (retired)](https://www.sparkfun.com/products/10596) - RG rotary encoder - illuminated, buttons and LEDs are common anode_
 
 License Information
 -------------------
