@@ -34,13 +34,9 @@
 // the pushbutton requires an external 1K-10K pullUP resistor
 // to operate.
 
-// * Pins marked with an asterisk should not change because
-// they use interrupts on that pin. All other pins can change,
-// see the constants below.
-
 // SERIAL MONITOR
 
-// Run this sketch with the serial monitor window set to 9600 baud.
+// Run this sketch with the serial monitor window set to 115200 baud.
 
 // HOW IT WORKS
 
@@ -68,8 +64,8 @@
 // interrupts alone because no interrupts will be called until
 // the button is actually released.
 
-// Uses the PinChangeInt library by Lex Talionis,
-// download from http://code.google.com/p/arduino-pinchangeint/
+// Uses the EnableInterrupt library from
+// https://github.com/GreyGnome/EnableInterrupt
 
 // License:
 // We use the "beerware" license for our firmware. You can do
@@ -82,10 +78,11 @@
 
 // Revision history:
 // 1.0 initial release MDG 2013/01/24
+// 1.1 Use EnableInterrupt library
+//     Use INPUT_PULLUP
 
-// Load the PinChangeInt (pin change interrupt) library
 
-#include <PinChangeInt.h>
+#include <EnableInterrupt.h>
 
 // Not all of these are used in this
 // sketch; the unused pins are commented out:
@@ -127,28 +124,22 @@ static unsigned long int button_down_start, button_down_time;
 
 void setup()
 {
-  // Set up all the I/O pins. Unused pins are commented out.
-  pinMode(ROT_B, INPUT);
-  digitalWrite(ROT_B, HIGH); // turn on weak pullup
-  pinMode(ROT_A, INPUT);
-  digitalWrite(ROT_A, HIGH); // turn on weak pullup
-  pinMode(ROT_SW, INPUT);
-  // The RG rotary switch is common anode with external pullup
-  // If you are using the RG rotary switch, you can also set
-  // the pin using INPUT_PULLUP
+  // Set up all the I/O pins.
+  pinMode(ROT_B, INPUT_PULLUP);
+  pinMode(ROT_A, INPUT_PULLUP);
+  pinMode(ROT_SW, INPUT_PULLUP);
+
   pinMode(ROT_LEDG, OUTPUT);
   pinMode(ROT_LEDR, OUTPUT);
 
   setLED(YELLOW);
 
-  Serial.begin(9600); // Use serial for debugging
+  Serial.begin(115200); // Use serial for debugging
   Serial.println("Begin RG Rotary Encoder Testing");
 
-  // We use the standard external interrupt pin for the rotary,
-  // but we'll use the pin change interrupt library for the button.
-
-  attachInterrupt(1, rotaryIRQ, CHANGE);
-  PCintPort::attachInterrupt(ROT_SW, &buttonIRQ, CHANGE);
+  enableInterrupt(ROT_A, &rotaryIRQ, CHANGE);
+  enableInterrupt(ROT_SW, &buttonIRQ, CHANGE);
+  setLED(0);
 }
 
 void buttonIRQ()
@@ -161,17 +152,12 @@ void buttonIRQ()
   // and button_downtime will contain the duration of the button
   // press in ms. (Set this to false after handling the change.)
 
-  // Raw information from PinChangeInt library:
-
-  // Serial.print("pin: ");
-  // Serial.print(PCintPort::arduinoPin);
-  // Serial.print(" state: ");
-  // Serial.println(PCintPort::pinState);
-
   static boolean button_state = false;
   static unsigned long start, end;
+  int btn;
 
-  if ((PCintPort::pinState == LOW) && (button_state == false))
+  btn = digitalRead(ROT_SW);
+  if ((btn == LOW) && (button_state == false))
     // Button was up, but is currently being pressed down
   {
     // Discard button presses too close together (debounce)
@@ -182,7 +168,7 @@ void buttonIRQ()
       button_pressed = true;
     }
   }
-  else if ((PCintPort::pinState == HIGH) && (button_state == true))
+  else if ((btn == HIGH) && (button_state == true))
     // Button was down, but has just been released
   {
     // Discard button releases too close together (debounce)
@@ -233,7 +219,9 @@ void rotaryIRQ()
 
 void loop()
 {
-  // The rotary IRQ sets the flag rotary_counter to true
+    static boolean long_press = false;
+
+  // The rotary IRQ sets the flag rotary_change to true
   // if the knob position has changed. We can use this flag
   // to do something in the main loop() each time there's
   // a change. We'll clear this flag when we're done, so
@@ -245,9 +233,18 @@ void loop()
     Serial.println(rotary_counter, DEC);
     rotary_change = false; // Clear flag
 
-    //blink for visual feedback
-    setLED(OFF);
-    delay(10); //try not to make this too long, otherwise the Arduino will miss ticks
+    // blink for visual feedback
+    // Don't make delay too long, otherwise the Arduino will miss ticks
+    // Flash on delay doesn't need to be as long to be noticeable
+    // as the flash off delay does.
+    if ((x & YELLOW) == 0) {
+        setLED(RED);
+        delay(5);
+    }
+    else {
+        setLED(OFF);
+        delay(10);
+    }
     setLED(x);
   }
 
@@ -274,6 +271,7 @@ void loop()
   {
     Serial.print("button release, downtime: ");
     Serial.println(button_downtime, DEC);
+    long_press = false;
     x++; setLED(x); // Change the color of the knob LED
     button_released = false; // Clear flag
 
@@ -305,7 +303,9 @@ void loop()
     button_down_time = millis() - button_down_start;
     // Serial.println(button_down_time);
     if (button_down_time > 1000) {
-      Serial.println("button held down for one second");
+        if (!long_press)
+            Serial.println("button held down for one second");
+        long_press = true;
     }
     //if LED is pressed down, display red
     digitalWrite(ROT_LEDR, HIGH);
